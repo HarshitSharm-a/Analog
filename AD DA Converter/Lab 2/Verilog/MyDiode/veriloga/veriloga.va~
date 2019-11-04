@@ -1,0 +1,13 @@
+// VerilogA for VerilogALab, MyDiode, veriloga
+
+`include "constants.vams"
+`include "disciplines.vams"
+
+module MyDiode(p,n);
+inout p,n;
+electrical p,n;
+	   analog begin
+	   	  I(p,n) <+ $table_model(V(p,n),"/h/d3/y/ha2442sh-s/Desktop/AD and DA Converters/Lab 2/diode_table_Current_vs_Voltage.csv","CC"); 
+	   end
+
+endmodule

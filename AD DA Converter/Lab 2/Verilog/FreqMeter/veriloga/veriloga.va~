@@ -1,0 +1,42 @@
+// VerilogA for VerilogALab, FreqMeter, veriloga
+
+`include "constants.vams"
+`include "disciplines.vams"
+
+nature Frequency
+       abstol = 1m ;
+       access = FF ;
+       units = "Hz" ;
+endnature
+
+discipline freq_current
+       potential Frequency;
+       flow Current;
+enddiscipline
+
+module FreqMeter(vp,vn,fout);
+       electrical vp,vn;
+       freq_current fout;
+       parameter integer log_to_file = 0;
+       integer out_file;
+       real tlast_cross;
+       real freq_out;
+
+analog begin
+       @(initial_step)begin
+	if(log_to_file) begin
+	 out_file = $fopen("/h/d3/y/ha2442sh-s/Desktop/AD and DA Converters/oof.dat");
+	 $fstrobe(out_file,"#Time/Freq data from module '%M'");
+	end
+       end
+       @(cross(V(vp,vn),+1)) begin
+       	freq_out = 1/($abstime - tlast_cross);
+	tlast_cross = $abstime ;
+       end
+       if(log_to_file) begin
+        $fstrobe(out_file,"%-.10g",$abstime,freq_out);
+       end
+FF(fout) <+ freq_out ;
+end 
+
+endmodule

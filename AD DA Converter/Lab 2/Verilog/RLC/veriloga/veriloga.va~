@@ -1,0 +1,22 @@
+// VerilogA for VerilogALab, RLC, veriloga
+
+`include "constants.vams"
+`include "disciplines.vams"
+
+module RLC(a,b);
+
+inout a,b;
+electrical a,b,c,d;
+parameter real R = 10k;
+parameter real R_C = 10;
+parameter real R_L = 5;
+parameter real C = 10p;
+parameter real L = 0.1u;
+	analog begin
+	  I(a,b) <+ V(a,b)/R;
+	  I(a,c) <+ V(a,c)/R_C;
+	  I(a,d) <+ V(a,d)/R_L;
+	  I(c,b) <+ ddt(V(a,b)*C);
+	  I(d,b) <+ idt(V(d,b)/L);
+	end
+endmodule

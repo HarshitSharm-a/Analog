@@ -1,0 +1,20 @@
+// VerilogA for VerilogALab, NAND_, veriloga
+
+`include "constants.vams"
+`include "disciplines.vams"
+
+module NAND_(A,B,Y);
+
+inout A,B;
+output Y;
+electrical A,B,Y;
+
+parameter real vlogic_high = 1.0;
+parameter real vlogic_low = 0.0;
+parameter real td = 2n, tr = 1n, tf = 1n;
+parameter real vth =(vlogic_high +vlogic_low)/2;
+analog begin 
+@(cross(V(A) - vth) or cross(V(B)-vth));
+V(Y) <+ transition((V(A) > vth) && (V(B) > vth) ? vlogic_low : vlogic_high,td,tr,tf );
+
+endmodule
